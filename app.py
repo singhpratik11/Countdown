@@ -62,6 +62,7 @@ defaults = {
     "meeting_time": DEFAULT_TIME,
     "girlfriend_name": "my love",
     "your_name": "me",
+    "current_update": "Right now I am counting minutes, fixing my hair, and pretending I am calm.",
     "note": "Every second is quietly choosing us. I cannot wait to see your face.",
 }
 for key, value in defaults.items():
@@ -72,6 +73,7 @@ meeting_date = st.session_state.meeting_date
 meeting_time = st.session_state.meeting_time
 girlfriend_name = st.session_state.girlfriend_name
 your_name = st.session_state.your_name
+current_update = st.session_state.current_update
 note = st.session_state.note
 
 target_iso = f"{meeting_date.isoformat()}T{meeting_time.strftime('%H:%M:%S')}"
@@ -79,6 +81,7 @@ display_time = meeting_time.strftime("%I:%M %p").lstrip("0")
 display_date = meeting_date.strftime("%A, %d %B %Y")
 safe_girlfriend_name = escape(girlfriend_name)
 safe_your_name = escape(your_name)
+safe_current_update = escape(current_update).replace("\n", "<br>")
 safe_note = escape(note).replace("\n", "<br>")
 backgrounds = background_images()
 background_layers = "\n".join(
@@ -346,6 +349,27 @@ def render_romantic_page() -> None:
         line-height: 1.55;
     }}
 
+    .live-update {{
+        width: min(100%, 760px);
+        margin: 0.95rem auto 0;
+        padding: 0.82rem 1rem;
+        border: 1px solid rgba(157, 23, 77, 0.16);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.66);
+        box-shadow: 0 14px 34px rgba(157, 23, 77, 0.08);
+        color: #57243f;
+        line-height: 1.55;
+        text-align: center;
+    }}
+
+    .live-update b {{
+        display: block;
+        margin-bottom: 0.22rem;
+        color: #9d174d;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+    }}
+
     .animation {{
         position: relative;
         width: min(100%, 780px);
@@ -580,6 +604,11 @@ def render_romantic_page() -> None:
                 <div class="message" id="message">Every second is one tiny step closer to you.</div>
             </div>
 
+            <div class="live-update">
+                <b>Right now</b>
+                {safe_current_update}
+            </div>
+
             <div class="animation">
                 <div class="ground"></div>
                 <div class="bear left">
@@ -624,7 +653,7 @@ def render_romantic_page() -> None:
             setText("hours", "00");
             setText("minutes", "00");
             setText("seconds", "00");
-            document.getElementById("message").textContent = "It is time. Go hold her hand.";
+            document.getElementById("message").innerHTML = "Please open the door &#128150; &#127969;";
             return;
         }}
 
@@ -660,5 +689,5 @@ with st.expander("."):
     st.time_input("Time", key="meeting_time", step=60)
     st.text_input("Her", key="girlfriend_name")
     st.text_input("You", key="your_name")
+    st.text_area("Right now", key="current_update", height=80)
     st.text_area("Message", key="note", height=100)
-
